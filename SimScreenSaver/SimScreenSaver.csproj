@@ -94,7 +94,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del /Q *.config *.pbd
-rename *.exe *.scr</PostBuildEvent>
+    <PostBuildEvent>del /Q *.config *.pdb
+copy *.exe *.scr</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del /Q *.exe *.scr</PreBuildEvent>
   </PropertyGroup>
 </Project>

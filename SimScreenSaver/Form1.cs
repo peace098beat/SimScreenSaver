@@ -27,10 +27,17 @@ namespace SimScreenSaver
         {
             InitializeComponent();
 
+            //バージョンの取得
+            System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Version ver = asm.GetName().Version;
+            label_version.Text  = $"Assembly Version {ver.ToString()}";
+
+            // 最大化
+            this.WindowState = FormWindowState.Maximized;
 
             // 「埋め込みリソース」から画像を取得
-            System.Reflection.Assembly myAssembly =System.Reflection.Assembly.GetExecutingAssembly();
-            
+            System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+
             Icon1 = new Bitmap(myAssembly.GetManifestResourceStream(@"SimScreenSaver.img.v2-02.png"));
             Icon2 = new Bitmap(myAssembly.GetManifestResourceStream(@"SimScreenSaver.img.v2-03.png"));
             Icon3 = new Bitmap(myAssembly.GetManifestResourceStream(@"SimScreenSaver.img.v2-04.png"));
@@ -42,6 +49,11 @@ namespace SimScreenSaver
         /// 終了処理
         /// </summary>
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            // 保留
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
 #if DEBUG
             Debug.WriteLine($"MouseMove {DateTime.Now}");
@@ -55,7 +67,7 @@ namespace SimScreenSaver
         /// </summary>
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //pictureBox1.Refresh();
+            pictureBox1.Refresh();
         }
 
         //==================================================================
@@ -63,7 +75,7 @@ namespace SimScreenSaver
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            int duration = 2; // sec
+            int duration = 3; // sec
             int index = (sw.Elapsed.Seconds / duration) % Icons.Length;
 
             Graphics g = e.Graphics;
@@ -97,6 +109,7 @@ namespace SimScreenSaver
 
             Debug.WriteLine($"repaint {DateTime.Now}");
         }
+        //==================================================================
 
 
     }
