@@ -15,18 +15,15 @@
 ・機能 3: CPU, メモリ使用率を表示	(未実装)
 
 
-## Version
-
- - [最新版](https://github.com/peace098beat/)
-
-
 ## Release
 
  - [v0.1.0] アイコン画像を表示 (2019-02-19) 
 
+
 ## Install
 
-インストールは必要ありません[ここ](https://github.com/peace098beat/PomodoroTimer/releases/tag/)からexeファイルをダウンロードして使ってください.
+インストールは必要ありません[ここ](https://github.com/peace098beat/SimScreenSaver/releases/tag)からscrファイルをダウンロードして使ってください.
+
 
 ## Author
 
