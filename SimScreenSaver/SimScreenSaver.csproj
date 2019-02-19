@@ -7,7 +7,7 @@
     <ProjectGuid>{DFCF35E2-420D-4F69-BFF6-CB8A0AE54F18}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>SimScreenSaver</RootNamespace>
-    <AssemblyName>SimScreenSaver</AssemblyName>
+    <AssemblyName>SimScreenSaver_v0.1.0</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -25,12 +25,16 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>application.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -80,18 +84,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="img\v2-02.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="img\v2-03.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="img\v2-04.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="img\v2-05.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="img\v2-02.png" />
+    <EmbeddedResource Include="img\v2-03.png" />
+    <EmbeddedResource Include="img\v2-04.png" />
+    <EmbeddedResource Include="img\v2-05.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="application.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del /Q *.config *.pbd
+rename *.exe *.scr</PostBuildEvent>
+  </PropertyGroup>
 </Project>

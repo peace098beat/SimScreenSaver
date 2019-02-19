@@ -20,33 +20,31 @@ namespace SimScreenSaver
         public Bitmap[] Icons { get; }
 
 
-        public Stopwatch sw = new Stopwatch();
+        public Stopwatch sw = Stopwatch.StartNew();
 
 
         public Form1()
         {
             InitializeComponent();
 
-            this.sw.Start();
 
-            pictureBox1.Size = new Size(250, 250);
-
-            //画像ファイルを表示する
-            Icon1 = new Bitmap(@"img\v2-02.png");
-            Icon2 = new Bitmap(@"img\v2-03.png");
-            Icon3 = new Bitmap(@"img\v2-04.png");
-            Icon4 = new Bitmap(@"img\v2-05.png");
-
+            // 「埋め込みリソース」から画像を取得
+            System.Reflection.Assembly myAssembly =System.Reflection.Assembly.GetExecutingAssembly();
+            
+            Icon1 = new Bitmap(myAssembly.GetManifestResourceStream(@"SimScreenSaver.img.v2-02.png"));
+            Icon2 = new Bitmap(myAssembly.GetManifestResourceStream(@"SimScreenSaver.img.v2-03.png"));
+            Icon3 = new Bitmap(myAssembly.GetManifestResourceStream(@"SimScreenSaver.img.v2-04.png"));
+            Icon4 = new Bitmap(myAssembly.GetManifestResourceStream(@"SimScreenSaver.img.v2-05.png"));
             Icons = new Bitmap[] { Icon1, Icon2, Icon3, Icon4 };
         }
 
         /// <summary>
         /// 終了処理
         /// </summary>
-        private void Form1_MouseHover(object sender, EventArgs e)
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
 #if DEBUG
-            Debug.WriteLine($"Close {DateTime.Now}");
+            Debug.WriteLine($"MouseMove {DateTime.Now}");
 #else
             this.Close();
 #endif
@@ -57,7 +55,7 @@ namespace SimScreenSaver
         /// </summary>
         private void timer1_Tick(object sender, EventArgs e)
         {
-            pictureBox1.Refresh();
+            //pictureBox1.Refresh();
         }
 
         //==================================================================
