@@ -20,6 +20,7 @@
  - [v0.1.0] アイコン画像を表示 (2019-02-19) 
 
 
+
 ## Install
 
 インストールは必要ありません[ここ](https://github.com/peace098beat/SimScreenSaver/releases/tag)からscrファイルをダウンロードして使ってください.
