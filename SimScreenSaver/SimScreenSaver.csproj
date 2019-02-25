@@ -7,7 +7,7 @@
     <ProjectGuid>{DFCF35E2-420D-4F69-BFF6-CB8A0AE54F18}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>SimScreenSaver</RootNamespace>
-    <AssemblyName>SimScreenSaver_v0.1.0</AssemblyName>
+    <AssemblyName>SimScreenSaver_v0.2.0</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
