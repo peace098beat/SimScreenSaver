@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SimScreenSaver
@@ -22,15 +17,22 @@ namespace SimScreenSaver
 
         public Stopwatch sw = Stopwatch.StartNew();
 
+        List<SingleCPUManager> SingleCPUList = new List<SingleCPUManager>();
 
         public Form1()
         {
             InitializeComponent();
 
+
+            for (int i = 0; i < SingleCPUManager.GetCPUCount(); i++)
+            {
+                SingleCPUList.Add(new SingleCPUManager(i, 200, 4, 30));
+            }
+
             //バージョンの取得
             System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
             System.Version ver = asm.GetName().Version;
-            label_version.Text  = $"Assembly Version {ver.ToString()}";
+            label_version.Text = $"Assembly Version {ver.ToString()}";
 
             // 最大化
             this.WindowState = FormWindowState.Maximized;
@@ -55,11 +57,7 @@ namespace SimScreenSaver
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-#if DEBUG
-            Debug.WriteLine($"MouseMove {DateTime.Now}");
-#else
             this.Close();
-#endif
         }
 
         /// <summary>
@@ -75,6 +73,9 @@ namespace SimScreenSaver
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
+            Debug.WriteLine($"repaint {DateTime.Now}");
+
+            // -------------- iconを表示
             int duration = 3; // sec
             int index = (sw.Elapsed.Seconds / duration) % Icons.Length;
 
@@ -106,9 +107,124 @@ namespace SimScreenSaver
                 g.DrawImage(this.Icons[index], IconRect.X, IconRect.Y, (int)w, IconRect.Height);
             }
 
+            // -------------- /iconを表示
 
-            Debug.WriteLine($"repaint {DateTime.Now}");
+
+
+            // -------------- CPU使用率を表示
+
+            int[] ave = CPUManager.GetAveValues();
+            int[] max = CPUManager.GetMaxValues();
+            int[] ptp = CPUManager.GetPeakToPeakValues();
+
+
+
+            label_CPU.Text = "";
+            label_CPU.Text += String.Join(", ", ave) + Environment.NewLine;
+            label_CPU.Text += String.Join(", ", max) + Environment.NewLine;
+            label_CPU.Text += String.Join(", ", ptp) + Environment.NewLine;
+
+
+            // -------------- CPU使用率を表示
+
+            int Ncpu = Environment.ProcessorCount;
+
+            int W = pictureBox1.Width;
+            int H = pictureBox1.Height;
+
+            RectangleF ChartArea = new RectangleF(W*0.1f, 100, W*0.8f, (H * 0.1f));
+
+            for (int k = 0; k < Ncpu; k++)
+            {
+                SingleCPUManager scpu = SingleCPUList[k];
+
+                float[] cpu_values = scpu.GetQueArray();
+
+                int N = cpu_values.Length;
+                PointF[] Origins = new PointF[N];
+                for (int i = 0; i < cpu_values.Length; i++)
+                {
+                    Origins[i].X = i;
+                    Origins[i].Y = cpu_values[i];
+                }
+
+                float X0 = ChartArea.X + (ChartArea.Width / Ncpu) * k;
+                float Y0 = ChartArea.Y ;
+
+                Pen pen = new Pen(Color.Green, 1);
+
+                RectangleF TargetScreen = new RectangleF();
+                this.DrawLines(e, pen, Origins, 
+                    new RectangleF(0, 0, cpu_values.Length*1.2f, 120),
+                    new RectangleF(X0, Y0, ChartArea.Width / Ncpu, ChartArea.Height));
+
+            }
+
+
         }
+
+
+        /// <summary>
+        /// 正規化座標へ変換
+        /// x[0,1], y[0,1]の範囲
+        /// </summary>
+        /// <param name="Origins">ワールド座標の点</param>
+        /// <param name="ClipRect">ワールド座標のクリップ領域. xy:左下. </param>
+        static PointF Norm(PointF Origin, RectangleF ClipRect)
+        {
+            PointF NormPoint = new PointF();
+
+            NormPoint.X = (Origin.X - ClipRect.X) / (ClipRect.Width) + ClipRect.X;
+            NormPoint.Y = (Origin.Y - ClipRect.Y) / (ClipRect.Height) + ClipRect.Y;
+
+            return NormPoint;
+        }
+
+        /// <summary>
+        /// 座標変換するぜ
+        /// </summary>
+        /// <param name="Origin"></param>
+        /// <param name="ClipRect"></param>
+        /// <param name="DrawRect"></param>
+        static PointF ScreenPosition(PointF Origin, RectangleF ClipRect, RectangleF DrawRect)
+        {
+            PointF norm = Norm(Origin, ClipRect);
+
+            PointF Screen = new PointF();
+
+            Screen.X = (norm.X * DrawRect.Width) + DrawRect.X;
+            Screen.Y = ((1f - norm.Y) * DrawRect.Height) + DrawRect.Y;
+
+
+            return Screen;
+
+        }
+
+        /// <summary>
+        /// 指定した位置にラインを描画
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="pen"></param>
+        /// <param name="Origins">ワールド座標の点</param>
+        /// <param name="ClipRect">ワールド座標のクリップ領域. xy:左下. </param>
+        /// <param name="DrawRect">描画先のスクリーン座標. xy:左上</param>
+        private void DrawLines(PaintEventArgs e, Pen pen, PointF[] Origins, RectangleF ClipRect, RectangleF DrawRect)
+        {
+            int N = Origins.Length;
+
+            PointF[] ScrPoints = new PointF[N];
+
+            for (int i = 0; i < Origins.Length; i++)
+            {
+                PointF _ScrPoint = ScreenPosition(Origins[i], ClipRect, DrawRect);
+
+                ScrPoints[i] = _ScrPoint;
+            }
+
+            e.Graphics.DrawLines(pen, ScrPoints);
+
+        }
+
         //==================================================================
 
 
