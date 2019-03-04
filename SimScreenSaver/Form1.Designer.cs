@@ -33,6 +33,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label_version = new System.Windows.Forms.Label();
             this.label_CPU = new System.Windows.Forms.Label();
+            this.richTextBox_RSS = new System.Windows.Forms.RichTextBox();
+            this.timer_rss = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -79,12 +81,29 @@
             this.label_CPU.TabIndex = 2;
             this.label_CPU.Text = "CPU";
             // 
+            // richTextBox_RSS
+            // 
+            this.richTextBox_RSS.BackColor = System.Drawing.SystemColors.ControlText;
+            this.richTextBox_RSS.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox_RSS.ForeColor = System.Drawing.Color.Silver;
+            this.richTextBox_RSS.Location = new System.Drawing.Point(14, 208);
+            this.richTextBox_RSS.Name = "richTextBox_RSS";
+            this.richTextBox_RSS.Size = new System.Drawing.Size(100, 96);
+            this.richTextBox_RSS.TabIndex = 3;
+            this.richTextBox_RSS.Text = "tttttt";
+            // 
+            // timer_rss
+            // 
+            this.timer_rss.Interval = 10000;
+            this.timer_rss.Tick += new System.EventHandler(this.timer_rss_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlText;
             this.ClientSize = new System.Drawing.Size(453, 327);
+            this.Controls.Add(this.richTextBox_RSS);
             this.Controls.Add(this.label_CPU);
             this.Controls.Add(this.label_version);
             this.Controls.Add(this.pictureBox1);
@@ -103,6 +122,8 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label label_version;
         private System.Windows.Forms.Label label_CPU;
+        private System.Windows.Forms.RichTextBox richTextBox_RSS;
+        private System.Windows.Forms.Timer timer_rss;
     }
 }
 

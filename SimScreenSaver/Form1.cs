@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using System.ServiceModel.Syndication;
+using System.Xml;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace SimScreenSaver
 {
@@ -23,6 +27,7 @@ namespace SimScreenSaver
         {
             InitializeComponent();
 
+            timer_rss.Start();
 
             for (int i = 0; i < SingleCPUManager.GetCPUCount(); i++)
             {
@@ -132,7 +137,7 @@ namespace SimScreenSaver
             int W = pictureBox1.Width;
             int H = pictureBox1.Height;
 
-            RectangleF ChartArea = new RectangleF(W*0.1f, 100, W*0.8f, (H * 0.1f));
+            RectangleF ChartArea = new RectangleF(W * 0.1f, 100, W * 0.8f, (H * 0.1f));
 
             for (int k = 0; k < Ncpu; k++)
             {
@@ -149,13 +154,13 @@ namespace SimScreenSaver
                 }
 
                 float X0 = ChartArea.X + (ChartArea.Width / Ncpu) * k;
-                float Y0 = ChartArea.Y ;
+                float Y0 = ChartArea.Y;
 
                 Pen pen = new Pen(Color.Green, 1);
 
                 RectangleF TargetScreen = new RectangleF();
-                this.DrawLines(e, pen, Origins, 
-                    new RectangleF(0, 0, cpu_values.Length*1.2f, 120),
+                this.DrawLines(e, pen, Origins,
+                    new RectangleF(0, 0, cpu_values.Length * 1.2f, 120),
                     new RectangleF(X0, Y0, ChartArea.Width / Ncpu, ChartArea.Height));
 
             }
@@ -225,7 +230,62 @@ namespace SimScreenSaver
 
         }
 
+
         //==================================================================
+
+
+
+        /// <summary>
+        /// RSSリーダー
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void timer_rss_Tick(object sender, EventArgs e)
+        {
+            // リサイズ
+            richTextBox_RSS.Size = new Size(Width / 2, this.Height / 2);
+            richTextBox_RSS.Left = 100;
+
+            // Google Alert
+            string url = @"https://www.google.co.jp/alerts/feeds/09047520966360389555/18173224082898862477";
+
+
+            await Task.Run(() =>
+             {
+                 richTextBox_RSS.Invoke((Action)(() =>
+                 {
+                     richTextBox_RSS.Text +="run";
+
+                 }));
+
+                 using (XmlReader rdr = XmlReader.Create(url))
+                 {
+                     SyndicationFeed feed = SyndicationFeed.Load(rdr);
+
+                     foreach (SyndicationItem item in feed.Items)
+                     {
+                         TextSyndicationContent c = (TextSyndicationContent)item.Content;
+
+                         richTextBox_RSS.Invoke((Action)(() =>
+                         {
+                             richTextBox_RSS.Text += c.Text;
+
+                         }));
+
+                         //richTextBox_RSS.AppendText(c.Text);
+                         //Console.WriteLine("item Title:" + item.Title.Text);
+                         //Console.WriteLine("item Title:" + item.Content.Type);
+                         //Console.WriteLine("item Title:" + c.Text);
+
+                         //Console.WriteLine("link:" + (item.Links.Count > 0
+                         //                ? item.Links[0].Uri.AbsolutePath : ""));
+                     }
+                 }
+             });
+
+
+
+        }
 
 
     }
